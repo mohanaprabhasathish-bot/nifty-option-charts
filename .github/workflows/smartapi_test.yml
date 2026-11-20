@@ -1,0 +1,26 @@
+name: SmartAPI connection test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install smartapi-python==1.5.5 pyotp==2.9.0 logzero==1.7.0 websocket-client==1.9.2 requests
+
+      - name: Run SmartAPI test
+        env:
+          ANGEL_API_KEY: ${{ secrets.ANGEL_API_KEY }}
+          ANGEL_CLIENT_CODE: ${{ secrets.ANGEL_CLIENT_CODE }}
+          ANGEL_MPIN: ${{ secrets.ANGEL_MPIN }}
+          ANGEL_TOTP_SECRET: ${{ secrets.ANGEL_TOTP_SECRET }}
+        run: python smartapi_test.py
